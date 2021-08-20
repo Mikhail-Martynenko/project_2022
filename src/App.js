@@ -1,18 +1,15 @@
 import React, {useRef, useState} from "react";
 import {Delaunay} from "d3-delaunay";
-
+import './styles.css'
 
 function App() {
     let canvas = document.getElementById('canvas');
     let context = canvas.getContext('2d');
 
-
-   // const [stepRectangle, setStepRectangle] = useState(0)
-    // const [stepСircle, setStepСircle] = useState(0)
-
-
     let pointsForRectangle = [];
     let pointsForCircle = [];
+    //let jsonPoints = null;
+    //let jsonTrianglesPoints = null;
 
     function triangulationRectangle(stepRectangle) {
         for (let x = 0; x <= 600; x += stepRectangle) {
@@ -22,11 +19,9 @@ function App() {
         }
     }
 
-    //  triangulationRectangle(points2)
-
 // Функция для добавления точек в круг
     function triangulationCircle(stepСircle) {
-       // let radius = 200;
+        // let radius = 200;
         pointsForCircle.push([300, 300]);
         let x = null;
         let y = null;
@@ -38,10 +33,13 @@ function App() {
                 pointsForCircle.push([x, y]);
             }
         }
+        // for (let x = 0; x <= 200; x += 100) {
+        //     for (let y = 0; y <= 200; y += 100) {
+        //         pointsForCircle.push([x+200 , y+200 ]);
+        //     }
+        // }
         drawCircle()
     }
-
-    // triangulationCircle(points)
 
 // Нарисовать круг
     function drawCircle() {
@@ -53,6 +51,11 @@ function App() {
         context.closePath();
     }
 
+    // Состояние JSON
+    const [jsonPoints, setJsonPoints] = useState('')
+    const [jsonVerticesOfTriangles, setJsonVerticesOfTriangles] = useState('')
+
+// Триангуляция
     function triangulation(arr) {
         const delaunay = Delaunay.from(arr);
         let tr = delaunay.triangles
@@ -68,57 +71,68 @@ function App() {
             context.lineTo(points[t2 * 2], points[t2 * 2 + 1]);
             context.closePath();
             context.stroke();
-
         }
+        setJsonPoints(JSON.stringify(arr))
+        setJsonVerticesOfTriangles(JSON.stringify(tr))
     }
-
-    //triangulation(pointsForRectangle)
-    // triangulation(points2)
 
     const bodyInputRef = useRef()
     const bodyInputRef2 = useRef()
 
-    // Кнопка триангуляции
+    // Кнопка триангуляции прямоугольника
     function triangulationRectangleButton(e) {
+
         e.preventDefault();
         context.clearRect(500, 100, 800, 600);
 
-        console.log(bodyInputRef.current.value)
-
         triangulationRectangle(Number(bodyInputRef.current.value))
         triangulation(pointsForRectangle)
-
-        console.log(pointsForRectangle)
 
         pointsForRectangle = [];
     }
 
     // Кнопка триангуляции круга
     function triangulationCircleButton(e) {
+
         e.preventDefault();
-      // context.clearRect(300, 300, 250, 250);
-
-
         triangulationCircle(Number(bodyInputRef2.current.value))
         triangulation(pointsForCircle)
 
         pointsForCircle = [];
     }
 
+
+    // function foo(e) {
+    //     e.preventDefault();
+    //
+    // }
+
     return (
-        <div>
+        <div className='App'>
             <form>
                 <input
+                    defaultValue='70'
                     ref={bodyInputRef}
                 />
-                <button onClick={triangulationRectangleButton}> Триангуляция прямоугольника</button>
-            <div>
-                <input
-                    ref={bodyInputRef2}
-                />
-                <button onClick={triangulationCircleButton}> Триангуляция круга</button>
-            </div>
+                <button onClick={triangulationRectangleButton}>Триангуляция прямоугольника</button>
+                <div>
+                    <input
+                        defaultValue='40'
+                        ref={bodyInputRef2}
+                    />
+                    <button onClick={triangulationCircleButton}>Триангуляция круга</button>
+                </div>
             </form>
+            <div>
+                {/*<button onClick={foo}>Получить JSON</button>*/}
+                <div>
+                    <div>JSON</div>
+                    <div>Координаты точек</div>
+                    <div>{jsonPoints}</div>
+                    <div>Номера вершин треугольников</div>
+                    <div>{jsonVerticesOfTriangles}</div>
+                </div>
+            </div>
         </div>
     );
 }

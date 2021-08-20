@@ -1,31 +1,7 @@
-/*
-h1 {
-  color: red;
-  background-color: white;
+.App{
+    width: 500px;
+    height: 250px;
 }
-*/
+.Nice{
 
-.triangles {
-  fill: none;
-}
-
-.links {
-  stroke: #000;
-}
-
-.sites {
-  fill: #000;
-  stroke: #fff;
-}
-
-.triangles .primary {
-  fill: #f00;
-}
-
-.links .primary {
-  stroke: #fff;
-}
-
-.sites :first-child {
-  fill: #fff;
 }
